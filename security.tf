@@ -1,5 +1,5 @@
 resource "aws_security_group" "alb" {
-  name        = "${var.environment}-alb-sg"
+  name        = "${environment}-alb-sg"
   description = "Security group for ALB"
   vpc_id      = aws_vpc.main.id
 
@@ -25,7 +25,7 @@ resource "aws_security_group" "alb" {
   }
 
   tags = {
-    Name        = "${var.environment}-alb-sg"
+    Name        = "${environment}-alb-sg"
     Environment = var.environment
   }
 }
