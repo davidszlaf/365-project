@@ -3,13 +3,13 @@ data "aws_availability_zones" "available" {
 }
 
 resource "aws_vpc" "main" {
-  cidr_block           = var.vpc_cidr
+  cidr_block           = vpc_cidr
   enable_dns_hostnames = true
   enable_dns_support   = true
 
   tags = {
-    Name        = "${var.environment}-vpc"
-    Environment = var.environment
+    Name        = "${environment}-vpc"
+    Environment = environment
   }
 }
 
@@ -17,14 +17,14 @@ resource "aws_vpc" "main" {
 resource "aws_subnet" "public" {
   count             = 2
   vpc_id            = aws_vpc.main.id
-  cidr_block        = cidrsubnet(var.vpc_cidr, 8, count.index)
+  cidr_block        = cidrsubnet(vpc_cidr, 8, count.index)
   availability_zone = data.aws_availability_zones.available.names[count.index]
 
   map_public_ip_on_launch = true
 
   tags = {
-    Name        = "${var.environment}-public-subnet-${count.index + 1}"
-    Environment = var.environment
+    Name        = "${environment}-public-subnet-${count.index + 1}"
+    Environment = environment
   }
 }
 
@@ -36,8 +36,8 @@ resource "aws_subnet" "private" {
   availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags = {
-    Name        = "${var.environment}-private-subnet-${count.index + 1}"
-    Environment = var.environment
+    Name        = "${environment}-private-subnet-${count.index + 1}"
+    Environment = environment
   }
 }
 
@@ -46,8 +46,8 @@ resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name        = "${var.environment}-igw"
-    Environment = var.environment
+    Name        = "${environment}-igw"
+    Environment = environment
   }
 }
 
@@ -57,8 +57,8 @@ resource "aws_eip" "nat" {
   depends_on = [aws_internet_gateway.main]
 
   tags = {
-    Name        = "${var.environment}-nat-eip"
-    Environment = var.environment
+    Name        = "${environment}-nat-eip"
+    Environment = environment
   }
 }
 
@@ -68,8 +68,8 @@ resource "aws_nat_gateway" "main" {
   subnet_id     = aws_subnet.public[0].id
 
   tags = {
-    Name        = "${var.environment}-nat"
-    Environment = var.environment
+    Name        = "${environment}-nat"
+    Environment = environment
   }
 }
 
@@ -83,8 +83,8 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    Name        = "${var.environment}-public-rt"
-    Environment = var.environment
+    Name        = "${environment}-public-rt"
+    Environment = environment
   }
 }
 
@@ -98,8 +98,8 @@ resource "aws_route_table" "private" {
   }
 
   tags = {
-    Name        = "${var.environment}-private-rt"
-    Environment = var.environment
+    Name        = "${environment}-private-rt"
+    Environment = environment
   }
 }
 
